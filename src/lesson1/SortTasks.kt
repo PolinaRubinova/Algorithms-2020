@@ -2,6 +2,8 @@
 
 package lesson1
 
+import java.io.File
+
 /**
  * Сортировка времён
  *
@@ -62,9 +64,44 @@ fun sortTimes(inputName: String, outputName: String) {
  *
  * В случае обнаружения неверного формата файла бросить любое исключение.
  */
+
+//T = O(N * logN)
+//R = O(N)
 fun sortAddresses(inputName: String, outputName: String) {
-    TODO()
+    val outputStream = File(outputName).bufferedWriter()
+    val addresses = mutableMapOf<String, MutableList<String>>()
+    val result = mutableListOf<String>()
+    var str: String;
+    var name: String;
+
+    File(inputName).readLines().forEach {
+        str = it.split(" - ")[1]
+        name = it.split(" - ")[0]
+        if (name.split(" ").size != 2) throw IllegalArgumentException()
+        if (addresses.containsKey(str)) {
+            addresses[str]!!.add(name)
+        } else addresses[str] = mutableListOf(name)
+    }
+
+    result.addAll(
+        addresses.keys.sortedWith(
+            compareBy
+                ({ it.split(" ")[0] },
+                { it.split(" ")[1].toInt() })
+        )
+    )
+
+    for (key in result) {
+        addresses[key]!!.sort()
+        outputStream.write(
+            ("$key - " + addresses[key]!!.joinToString(", ") + "\n").replace(
+                "[", ""
+            ).replace("]", "")
+        )
+    }
+    outputStream.close()
 }
+
 
 /**
  * Сортировка температур
@@ -96,8 +133,40 @@ fun sortAddresses(inputName: String, outputName: String) {
  * 99.5
  * 121.3
  */
+
+//T = O(N)
+//R = O(N)
 fun sortTemperatures(inputName: String, outputName: String) {
-    TODO()
+    val outputStream = File(outputName).bufferedWriter()
+    val list = mutableListOf<Int>()
+    val res: IntArray
+
+    File(inputName).readLines().forEach {
+        list.add(it.replace(".", "").toInt() + 2730)
+    }
+
+    res = countingSort(list.toIntArray(), 7730) // |-2730| + 5000 = 7730
+    var str: String
+    var temp: Int
+
+    res.forEach {
+        temp = it - 2730
+        str = when {
+            (temp < 0 && temp.toString().length == 2) ->
+                temp.toString().substring(0, 1) + "0" +
+                        temp.toString().substring(1)
+            (temp >= 0 && temp.toString().length == 1) -> "0" +
+                    temp.toString().substring(0)
+            else -> (temp).toString()
+        }
+
+        outputStream.write(
+            str.substring(0, str.length - 1) + "." +
+                    str.substring(str.length - 1) + "\n"
+        )
+    }
+
+    outputStream.close()
 }
 
 /**

@@ -2,6 +2,8 @@
 
 package lesson2
 
+import kotlin.math.min
+
 /**
  * Получение наибольшей прибыли (она же -- поиск максимального подмассива)
  * Простая
@@ -96,6 +98,20 @@ fun josephTask(menNumber: Int, choiceInterval: Int): Int {
  */
 fun longestCommonSubstring(first: String, second: String): String {
     TODO()
+    /*var num = min(first.length, second.length)
+    var result = ""
+    loop@ while (num != 0) {
+        for (i in 0..first.length - num) {
+            for (j in 0..second.length - num) {
+                if (first.substring(i, num + i) == second.substring(j, num + j)) {
+                    result = first.substring(i, num + i)
+                    break@loop
+                }
+            }
+        }
+        num--
+    }
+    return result*/
 }
 
 /**

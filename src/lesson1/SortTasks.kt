@@ -140,9 +140,12 @@ fun sortTemperatures(inputName: String, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
     val list = mutableListOf<Int>()
     val res: IntArray
+    var el: Int
 
     File(inputName).readLines().forEach {
-        list.add(it.replace(".", "").toInt() + 2730)
+        el = it.replace(".", "").toInt()
+        if (el < -2730 || el > 5000) throw IllegalArgumentException()
+        list.add(el + 2730)
     }
 
     res = countingSort(list.toIntArray(), 7730) // |-2730| + 5000 = 7730

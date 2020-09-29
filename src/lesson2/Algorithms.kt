@@ -2,7 +2,6 @@
 
 package lesson2
 
-import kotlin.math.min
 import kotlin.math.pow
 
 /**

@@ -3,6 +3,7 @@
 package lesson2
 
 import kotlin.math.min
+import kotlin.math.pow
 
 /**
  * Получение наибольшей прибыли (она же -- поиск максимального подмассива)
@@ -96,22 +97,27 @@ fun josephTask(menNumber: Int, choiceInterval: Int): Int {
  * Если имеется несколько самых длинных общих подстрок одной длины,
  * вернуть ту из них, которая встречается раньше в строке first.
  */
+
+//T = O(first.length * second.length)
+//R =
+
+// Данное решение с лекции
+// Возможно позже напишу свое
 fun longestCommonSubstring(first: String, second: String): String {
-    TODO()
-    /*var num = min(first.length, second.length)
-    var result = ""
-    loop@ while (num != 0) {
-        for (i in 0..first.length - num) {
-            for (j in 0..second.length - num) {
-                if (first.substring(i, num + i) == second.substring(j, num + j)) {
-                    result = first.substring(i, num + i)
-                    break@loop
-                }
+    var longest = ""
+    for (i in first.indices) {
+        for (j in second.indices) {
+            var k = 0
+            while (i + k < first.length &&
+                j + k < second.length &&
+                first[i + k] == second[j + k]
+            ) k++
+            if (k > longest.length) {
+                longest = first.substring(i, i + k)
             }
         }
-        num--
     }
-    return result*/
+    return longest
 }
 
 /**
@@ -124,6 +130,33 @@ fun longestCommonSubstring(first: String, second: String): String {
  * Справка: простым считается число, которое делится нацело только на 1 и на себя.
  * Единица простым числом не считается.
  */
+
+//T = O(N*log(logN)))
+//R = O(N)
 fun calcPrimesNumber(limit: Int): Int {
-    TODO()
+    if (limit <= 1) return 0
+
+    val numbers = mutableListOf<Boolean>()
+    numbers.add(false)
+    numbers.add(false)
+
+    for (i in 2..limit) {
+        numbers.add(true)
+    }
+    var i = 2
+
+    //Решето Эратосфена
+    while (i < numbers.size) {
+        var count = i.toDouble().pow(2.0).toInt()
+        while (count < numbers.size) {
+            numbers[count] = false
+            count += i
+        }
+        i++
+        while (i < numbers.size && !numbers[i]) {
+            i++
+        }
+    }
+
+    return numbers.filter { it }.size
 }

@@ -134,10 +134,7 @@ fun longestCommonSubstring(first: String, second: String): String {
 //R = O(N)
 fun calcPrimesNumber(limit: Int): Int {
     if (limit <= 1) return 0
-
-    val numbers = mutableListOf<Boolean>()
-    numbers.add(false)
-    numbers.add(false)
+    val numbers = mutableListOf(false, false)
 
     for (i in 2..limit) {
         numbers.add(true)

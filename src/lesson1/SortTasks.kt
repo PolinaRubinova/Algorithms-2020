@@ -71,8 +71,8 @@ fun sortAddresses(inputName: String, outputName: String) {
     val outputStream = File(outputName).bufferedWriter()
     val addresses = mutableMapOf<String, MutableList<String>>()
     val result = mutableListOf<String>()
-    var str: String;
-    var name: String;
+    var str: String
+    var name: String
 
     File(inputName).readLines().forEach {
         str = it.split(" - ")[1]
@@ -91,17 +91,17 @@ fun sortAddresses(inputName: String, outputName: String) {
         )
     )
 
-    for (key in result) {
-        addresses[key]!!.sort()
-        outputStream.write(
-            ("$key - " + addresses[key]!!.joinToString(", ") + "\n").replace(
-                "[", ""
-            ).replace("]", "")
-        )
+    outputStream.use {
+        for (key in result) {
+            addresses[key]!!.sort()
+            it.write(
+                ("$key - " + addresses[key]!!.joinToString(", ") + "\n").replace(
+                    "[", ""
+                ).replace("]", "")
+            )
+        }
     }
-    outputStream.close()
 }
-
 
 /**
  * Сортировка температур
@@ -152,24 +152,26 @@ fun sortTemperatures(inputName: String, outputName: String) {
     var str: String
     var temp: Int
 
-    res.forEach {
-        temp = it - 2730
-        str = when {
-            (temp < 0 && temp.toString().length == 2) ->
-                temp.toString().substring(0, 1) + "0" +
-                        temp.toString().substring(1)
-            (temp >= 0 && temp.toString().length == 1) -> "0" +
-                    temp.toString().substring(0)
-            else -> (temp).toString()
+    outputStream.use {
+        res.forEach { resIt ->
+            temp = resIt - 2730
+
+            str = when {
+                (temp < 0 && temp.toString().length == 2) ->
+                    String.format("-0%s", temp.toString().substring(1))
+                (temp >= 0 && temp.toString().length == 1) ->
+                    String.format("0%s", temp.toString())
+                else -> (temp).toString()
+            }
+
+            it.write(
+                String.format(
+                    "%s.%s\n", str.substring(0, str.length - 1),
+                    str.substring(str.length - 1)
+                )
+            )
         }
-
-        outputStream.write(
-            str.substring(0, str.length - 1) + "." +
-                    str.substring(str.length - 1) + "\n"
-        )
     }
-
-    outputStream.close()
 }
 
 /**

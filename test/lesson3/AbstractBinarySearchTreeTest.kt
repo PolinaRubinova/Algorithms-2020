@@ -160,6 +160,20 @@ abstract class AbstractBinarySearchTreeTest {
                     "The tree doesn't have the element $element from the control set."
                 )
             }
+            val setZero = create()
+            assertFalse(
+                setZero.remove(0),
+                "ok"
+            )
+            setZero.add(1)
+            assertFalse(
+                setZero.remove(0),
+                "ok"
+            )
+            assertTrue(
+                setZero.remove(1),
+                "ok"
+            )
             println("All clear!")
         }
     }

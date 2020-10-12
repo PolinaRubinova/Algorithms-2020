@@ -98,23 +98,34 @@ fun josephTask(menNumber: Int, choiceInterval: Int): Int {
  */
 
 //T = O(first.length * second.length)
-//R =
+//R = O(first.length * second.length)
 
-// Данное решение с лекции
-// Возможно позже напишу свое
 fun longestCommonSubstring(first: String, second: String): String {
+    if (first.isEmpty() || second.isEmpty()) return ""
     var longest = ""
+    var max = Pair(0, (0 to 0))
+    val counter = mutableListOf<MutableList<Int>>()
+
     for (i in first.indices) {
+        counter.add(mutableListOf())
         for (j in second.indices) {
-            var k = 0
-            while (i + k < first.length &&
-                j + k < second.length &&
-                first[i + k] == second[j + k]
-            ) k++
-            if (k > longest.length) {
-                longest = first.substring(i, i + k)
+            counter[i].add(0)
+            if (first[i] == second[j]) {
+                counter[i][j] = when {
+                    i == 0 || j == 0 -> 1
+                    else -> counter[i - 1][j - 1] + 1
+                }
+                if (counter[i][j] > max.first) max = Pair(counter[i][j], (i to j))
             }
         }
+    }
+    var i = max.second.first
+    var j = max.second.second
+
+    while (i >= 0 && j >= 0 && counter[i][j] > 0) {
+        longest = first[i] + longest
+        i--
+        j--
     }
     return longest
 }

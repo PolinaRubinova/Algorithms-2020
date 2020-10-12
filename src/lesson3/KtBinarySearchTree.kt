@@ -79,8 +79,66 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
      *
      * Средняя
      */
+
+    private fun findParent(start: Node<T>, value: T, parent: Node<T>?): Node<T>? {
+        val comparison = value.compareTo(start.value)
+        return when {
+            comparison == 0 -> parent
+            comparison < 0 -> findParent(start.left!!, value, start)
+            else -> findParent(start.right!!, value, start)
+        }
+    }
+
+    private fun remProcess(parent: Node<T>?, element: T, node: Node<T>?) {
+        if (parent != null) {
+            val comparison = parent.value.compareTo(element)
+            if (comparison > 0) {
+                parent.left = node
+            } else if (comparison < 0) {
+                parent.right = node
+            }
+        } else root = node
+    }
+
+    // T = O(log n) в среднем, O(n) в худшем случае
+    // R = O(1)
     override fun remove(element: T): Boolean {
-        TODO()
+        val remNode = find(element)
+        if (remNode == null || remNode.value != element) return false
+
+        val parent = root?.let { findParent(it, element, null) }
+
+        when {
+            // 1 случай- когда у удаляемого элемента нет детей или нет детей справа
+            remNode.right == null -> {
+                remProcess(parent, element, remNode.left)
+            }
+
+            // 2 случай- когда у правого ребенка нет детей слева
+            remNode.right?.left == null -> {
+                remNode.right?.left = remNode.left
+                remProcess(parent, element, remNode.right)
+            }
+
+            // 3 случай- когда у правого ребенка есть дети слева
+            else -> {
+                var leftNode = remNode.right!!.left!!
+                var leftNodeParent = remNode.right!!
+
+                while (leftNode.left != null) {
+                    leftNodeParent = leftNode
+                    leftNode = leftNode.left!!
+                }
+
+                leftNodeParent.left = leftNode.right
+                leftNode.left = remNode.left
+                leftNode.right = remNode.right
+
+                remProcess(parent, element, leftNode)
+            }
+        }
+        size--
+        return true
     }
 
     override fun comparator(): Comparator<in T>? =

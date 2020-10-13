@@ -108,32 +108,33 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
         val parent = root?.let { findParent(it, element, null) }
 
         when {
-            // 1 случай- когда у удаляемого элемента нет детей или нет детей справа
-            remNode.right == null -> {
-                remProcess(parent, element, remNode.left)
-            }
+            // 1 случай- когда у удаляемого элемента нет детей или нет детей справа,
+            // левый ребенок занимает место удаляемого узла
+            remNode.right == null -> remProcess(parent, element, remNode.left)
 
-            // 2 случай- когда у правого ребенка нет детей слева
+            // 2 случай- когда у правого ребенка нет детей слева,
+            // правый ребенок занимает место удаляемого узла
             remNode.right?.left == null -> {
                 remNode.right?.left = remNode.left
                 remProcess(parent, element, remNode.right)
             }
 
-            // 3 случай- когда у правого ребенка есть дети слева
+            // 3 случай- когда у правого ребенка есть дети слева,
+            // крайний левый ребенок из правого поддерева занимает место удаляемого узла
             else -> {
-                var leftNode = remNode.right!!.left!!
-                var leftNodeParent = remNode.right!!
+                var rightLeftNode = remNode.right!!.left!!
+                var rightLeftNodeParent = remNode.right!!
 
-                while (leftNode.left != null) {
-                    leftNodeParent = leftNode
-                    leftNode = leftNode.left!!
+                while (rightLeftNode.left != null) {
+                    rightLeftNodeParent = rightLeftNode
+                    rightLeftNode = rightLeftNode.left!!
                 }
 
-                leftNodeParent.left = leftNode.right
-                leftNode.left = remNode.left
-                leftNode.right = remNode.right
+                rightLeftNodeParent.left = rightLeftNode.right
+                rightLeftNode.left = remNode.left
+                rightLeftNode.right = remNode.right
 
-                remProcess(parent, element, leftNode)
+                remProcess(parent, element, rightLeftNode)
             }
         }
         size--

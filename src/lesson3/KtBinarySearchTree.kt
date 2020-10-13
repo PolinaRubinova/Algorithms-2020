@@ -130,6 +130,8 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
                     rightLeftNode = rightLeftNode.left!!
                 }
 
+                // Левое поддерево родителя становится правым поддеревом крайнего левого узла
+                // Дети текущего узла становится детьми крайнего левого
                 rightLeftNodeParent.left = rightLeftNode.right
                 rightLeftNode.left = remNode.left
                 rightLeftNode.right = remNode.right

@@ -100,6 +100,17 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
         } else root = node
     }
 
+    private fun leftSubtree(remNodeRL: Node<T>, remNodeR: Node<T>): Node<T> {
+        var rLNode = remNodeRL
+        var rLNodeParent = remNodeR
+        while (rLNode.left != null) {
+            rLNodeParent = rLNode
+            rLNode = rLNode.left!!
+        }
+        rLNodeParent.left = rLNode.right
+        return rLNode
+    }
+
     // T = O(log n) в среднем, O(n) в худшем случае
     // R = O(1)
     override fun remove(element: T): Boolean {
@@ -122,17 +133,10 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
             // 3 случай- когда у правого ребенка есть дети слева,
             // крайний левый ребенок из правого поддерева занимает место удаляемого узла
             else -> {
-                var rightLeftNode = remNode.right!!.left!!
-                var rightLeftNodeParent = remNode.right!!
-
-                while (rightLeftNode.left != null) {
-                    rightLeftNodeParent = rightLeftNode
-                    rightLeftNode = rightLeftNode.left!!
-                }
-
                 // Левое поддерево родителя становится правым поддеревом крайнего левого узла
                 // Дети текущего узла становится детьми крайнего левого
-                rightLeftNodeParent.left = rightLeftNode.right
+                val rightLeftNode = leftSubtree(remNode.right!!.left!!, remNode.right!!)
+
                 rightLeftNode.left = remNode.left
                 rightLeftNode.right = remNode.right
 

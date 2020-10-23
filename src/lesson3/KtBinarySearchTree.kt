@@ -199,6 +199,14 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
 
         // T = O(log n)
         // R = O(1)
+
+        // Вертикальный обратный обход:
+        // Из текущего узла «спускаемся» до самого нижнего левого узла,
+        // добавляя в стек все посещенные узлы.
+        // Обрабатываем верхний узел из стека.
+        // Если в текущем узле имеется правое поддерево, начинаем следующую
+        // итерацию с правого узла. Если правого узла нет, пропускаем шаг
+        // со спуском и переходим к обработке следующего узла из стека.
         private var node: Node<T>? = null
 
         override fun next(): T {
@@ -228,7 +236,6 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
             remove(node!!.value)
             node = null
         }
-
     }
 
     /**

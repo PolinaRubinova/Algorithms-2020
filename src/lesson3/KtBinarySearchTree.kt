@@ -150,10 +150,23 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
     override fun comparator(): Comparator<in T>? =
         null
 
-    override fun iterator(): MutableIterator<T> =
-        BinarySearchTreeIterator()
+    override fun iterator(): MutableIterator<T> = BinarySearchTreeIterator()
 
     inner class BinarySearchTreeIterator internal constructor() : MutableIterator<T> {
+
+        private var stack = Stack<Node<T>>()
+
+        private fun inOrderIterator(node: Node<T>?) {
+            var r = node
+            while (r != null) {
+                stack.push(r)
+                r = r.left
+            }
+        }
+
+        init {
+            inOrderIterator(root)
+        }
 
         /**
          * Проверка наличия следующего элемента
@@ -165,10 +178,10 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
          *
          * Средняя
          */
-        override fun hasNext(): Boolean {
-            // TODO
-            throw NotImplementedError()
-        }
+
+        // T = O(1)
+        // R = O(1)
+        override fun hasNext(): Boolean = stack.isNotEmpty()
 
         /**
          * Получение следующего элемента
@@ -183,9 +196,16 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
          *
          * Средняя
          */
+
+        // T = O(log n)
+        // R = O(1)
+        private var node: Node<T>? = null
+
         override fun next(): T {
-            // TODO
-            throw NotImplementedError()
+            if (stack.isEmpty()) throw NoSuchElementException()
+            node = stack.pop()
+            inOrderIterator(node!!.right)
+            return node!!.value
         }
 
         /**
@@ -200,9 +220,13 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
          *
          * Сложная
          */
+
+        // T = O(log n) в среднем, O(n) в худшем случае
+        // R = O(1)
         override fun remove() {
-            // TODO
-            throw NotImplementedError()
+            if (node == null) throw IllegalStateException()
+            remove(node!!.value)
+            node = null
         }
 
     }

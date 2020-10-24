@@ -233,9 +233,6 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
             remove(node!!.value)
             node = null
         }
-
-        //СДЕЛАТЬ ТЕСТЫ НА Бросает IllegalStateException, если функция была вызвана до первого вызова next()
-        // или же была вызвана более одного раза после любого вызова next().
     }
 
     /**

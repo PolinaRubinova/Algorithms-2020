@@ -154,20 +154,6 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
 
     inner class BinarySearchTreeIterator internal constructor() : MutableIterator<T> {
 
-        private var stack = Stack<Node<T>>()
-
-        private fun inOrderIterator(node: Node<T>?) {
-            var r = node
-            while (r != null) {
-                stack.push(r)
-                r = r.left
-            }
-        }
-
-        init {
-            inOrderIterator(root)
-        }
-
         /**
          * Проверка наличия следующего элемента
          *
@@ -200,14 +186,26 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
         // T = O(log n)
         // R = O(1)
 
-        // Вертикальный обратный обход:
-        // Из текущего узла «спускаемся» до самого нижнего левого узла,
-        // добавляя в стек все посещенные узлы.
-        // Если в текущем узле имеется правое поддерево, начинаем следующую
-        // итерацию с правого узла. Если правого узла нет, пропускаем шаг
-        // со спуском и переходим к обработке следующего узла из стека.
+        // Вертикальный обратный обход
+        private var stack = Stack<Node<T>>()
         private var node: Node<T>? = null
 
+        // Из текущего узла «спускаемся» до самого нижнего левого узла,
+        // добавляя в стек все посещенные узлы.
+        private fun inOrderIterator(node: Node<T>?) {
+            var r = node
+            while (r != null) {
+                stack.push(r)
+                r = r.left
+            }
+        }
+
+        init {
+            inOrderIterator(root)
+        }
+
+        // Если в текущем узле имеется правое поддерево,
+        // начинаем следующую итерацию с правого узла.
         override fun next(): T {
             if (stack.isEmpty()) throw NoSuchElementException()
             node = stack.pop()
@@ -236,6 +234,8 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
             node = null
         }
 
+        //СДЕЛАТЬ ТЕСТЫ НА Бросает IllegalStateException, если функция была вызвана до первого вызова next()
+        // или же была вызвана более одного раза после любого вызова next().
     }
 
     /**

@@ -221,6 +221,7 @@ abstract class AbstractBinarySearchTreeTest {
         }
     }
 
+    // тесты достаточны
     protected fun doIteratorRemoveTest() {
         implementationTest { create().iterator().remove() }
         val random = Random()

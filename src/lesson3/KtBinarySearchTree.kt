@@ -114,20 +114,25 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
     // T = O(log n) в среднем, O(n) в худшем случае
     // R = O(1)
     override fun remove(element: T): Boolean {
-        val remNode = find(element)
-        if (remNode == null || remNode.value != element) return false
+        val node = find(element)
+        if (node == null || node.value != element) return false
+        return removeNode(element, node)
+    }
+
+    private fun removeNode(element: T, remNode: Node<T>): Boolean {
         val parent = root?.let { findParent(it, element, null) }
+        val rightRemNode = remNode.right
 
         when {
             // 1 случай- когда у удаляемого элемента нет детей или нет детей справа,
             // левый ребенок занимает место удаляемого узла
-            remNode.right == null -> remProcess(parent, element, remNode.left)
+            rightRemNode == null -> remProcess(parent, element, remNode.left)
 
             // 2 случай- когда у правого ребенка нет детей слева,
             // правый ребенок занимает место удаляемого узла
-            remNode.right?.left == null -> {
-                remNode.right?.left = remNode.left
-                remProcess(parent, element, remNode.right)
+            rightRemNode.left == null -> {
+                rightRemNode.left = remNode.left
+                remProcess(parent, element, rightRemNode)
             }
 
             // 3 случай- когда у правого ребенка есть дети слева,
@@ -135,10 +140,10 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
             else -> {
                 // Левое поддерево родителя становится правым поддеревом крайнего левого узла
                 // Дети текущего узла становится детьми крайнего левого
-                val rightLeftNode = leftSubtree(remNode.right!!.left!!, remNode.right!!)
+                val rightLeftNode = leftSubtree(rightRemNode.left!!, rightRemNode)
 
                 rightLeftNode.left = remNode.left
-                rightLeftNode.right = remNode.right
+                rightLeftNode.right = rightRemNode
 
                 remProcess(parent, element, rightLeftNode)
             }
@@ -230,7 +235,7 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
         // R = O(1)
         override fun remove() {
             if (node == null) throw IllegalStateException()
-            remove(node!!.value)
+            removeNode(node!!.value, node!!)
             node = null
         }
     }

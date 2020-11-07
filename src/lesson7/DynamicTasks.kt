@@ -2,6 +2,7 @@
 
 package lesson7
 
+
 /**
  * Наибольшая общая подпоследовательность.
  * Средняя
@@ -14,8 +15,45 @@ package lesson7
  * Если есть несколько самых длинных общих подпоследовательностей, вернуть любую из них.
  * При сравнении подстрок, регистр символов *имеет* значение.
  */
+
+//T = O(first.length * second.length)
+//R = O(first.length * second.length)
+
 fun longestCommonSubSequence(first: String, second: String): String {
-    TODO()
+    if (first.isEmpty() || second.isEmpty()) return ""
+
+    var longest = ""
+    var max = Pair(0, (0 to 0))
+    val counter = MutableList(first.length + 1) { IntArray(second.length + 1) }
+
+    for (i in 0..first.length) {
+        for (j in 0..second.length) {
+            counter[i][j] = when {
+                i == 0 || j == 0 -> 0
+                first[i - 1] == second[j - 1] -> counter[i - 1][j - 1] + 1
+                else -> maxOf(counter[i][j - 1], counter[i - 1][j])
+            }
+            if (counter[i][j] > max.first) max = Pair(counter[i][j], (i to j))
+        }
+    }
+
+    var count = max.first
+    var i = max.second.first
+    var j = max.second.second
+
+    while (i > 0 && j > 0 && count != 0) {
+        when {
+            counter[i][j] == counter[i - 1][j] -> j++
+            counter[i][j - 1] == counter[i][j] -> i++
+            else -> {
+                longest = first[i - 1] + longest
+                count--
+            }
+        }
+        i--
+        j--
+    }
+    return longest
 }
 
 /**
@@ -30,8 +68,47 @@ fun longestCommonSubSequence(first: String, second: String): String {
  * то вернуть ту, в которой числа расположены раньше (приоритет имеют первые числа).
  * В примере ответами являются 2, 8, 9, 12 или 2, 5, 9, 12 -- выбираем первую из них.
  */
+
+//T = O(first.length * second.length)
+//R = O(first.length * second.length)
+
 fun longestIncreasingSubSequence(list: List<Int>): List<Int> {
-    TODO()
+    if (list.isEmpty()) return list
+
+    val sortedList = list.sorted()
+    val size = list.size
+    val result = mutableSetOf<Int>()
+    var max = Pair(0, (0 to 0))
+    val counter = MutableList(size + 1) { IntArray(size + 1) }
+
+    for (i in 0..size) {
+        for (j in 0..size) {
+            counter[i][j] = when {
+                i == 0 || j == 0 -> 0
+                list[i - 1] == sortedList[j - 1] -> counter[i - 1][j - 1] + 1
+                else -> maxOf(counter[i][j - 1], counter[i - 1][j])
+            }
+            if (counter[i][j] > max.first) max = Pair(counter[i][j], (i to j))
+        }
+    }
+
+    var count = max.first
+    var i = max.second.first
+    var j = max.second.second
+
+    while (i > 0 && j > 0 && count != 0) {
+        when {
+            counter[i][j] == counter[i - 1][j] -> j++
+            counter[i][j - 1] == counter[i][j] -> i++
+            else -> {
+                result.add(list[i - 1])
+                count--
+            }
+        }
+        i--
+        j--
+    }
+    return result.toList().asReversed()
 }
 
 /**

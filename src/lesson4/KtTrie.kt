@@ -1,5 +1,8 @@
 package lesson4
 
+import java.lang.IllegalStateException
+import java.util.*
+
 /**
  * Префиксное дерево для строк
  */
@@ -68,8 +71,49 @@ class KtTrie : AbstractMutableSet<String>(), MutableSet<String> {
      *
      * Сложная
      */
-    override fun iterator(): MutableIterator<String> {
-        TODO()
-    }
+    override fun iterator(): MutableIterator<String> = TrieIterator()
 
+    inner class TrieIterator internal constructor() : MutableIterator<String> {
+
+        private var stack = Stack<String>()
+        private var nextStr = ""
+
+        //Кладем все слова в стек
+        private fun inOrderIterator(str: String, node: Node) {
+            for ((key, value) in node.children) {
+                if (key == 0.toChar()) {
+                    //если конец слова -> пушим в стек
+                    //и переходим к следующему потомку
+                    stack.push(str)
+                } else {
+                    //доходим до конца слова
+                    inOrderIterator(str + key, value)
+                }
+            }
+        }
+
+        init {
+            inOrderIterator(nextStr, root)
+        }
+
+        // T = O(1)
+        // R = O(1)
+        override fun hasNext(): Boolean = stack.isNotEmpty()
+
+        // T = O(1)
+        // R = O(1)
+        override fun next(): String {
+            if (stack.isEmpty()) throw NoSuchElementException()
+            nextStr = stack.pop()
+            return nextStr
+        }
+
+        // T = O(log n)
+        // R = O(1)
+        override fun remove() {
+            if (nextStr == "") throw IllegalStateException()
+            remove(nextStr)
+            nextStr = ""
+        }
+    }
 }

@@ -28,6 +28,7 @@ class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T
         var index = element.startingIndex()
         var current = storage[index]
         while (current != null) {
+
             //Изменили процедуру, чтобы она работала с ячейками DELETED
             if (current == element && current != DELETED) {
                 return true
@@ -52,6 +53,7 @@ class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T
         val startingIndex = element.startingIndex()
         var index = startingIndex
         var current = storage[index]
+
         //Изменили процедуру, чтобы она работала с ячейками DELETED
         while (current != null && current != DELETED) {
             if (current == element) {

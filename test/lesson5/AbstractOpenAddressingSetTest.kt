@@ -55,6 +55,7 @@ abstract class AbstractOpenAddressingSetTest {
                     "An element wasn't removed contrary to expected."
                 )
                 assertFalse(openAddressingSet.contains(secondInt))
+
                 assertFalse(
                     secondInt in openAddressingSet,
                     "A supposedly removed element is still in the set."
@@ -75,6 +76,7 @@ abstract class AbstractOpenAddressingSetTest {
                     expectedSize, openAddressingSet.size,
                     "The size of the set is not as expected."
                 )
+
                 openAddressingSet.add(secondInt)
                 assertTrue(
                     openAddressingSet.contains(secondInt) &&

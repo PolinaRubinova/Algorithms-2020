@@ -28,7 +28,8 @@ class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T
         var index = element.startingIndex()
         var current = storage[index]
         while (current != null) {
-            if (current == element) {
+            //Изменили процедуру, чтобы она работала с ячейками DELETED
+            if (current == element && current != DELETED) {
                 return true
             }
             index = (index + 1) % capacity
@@ -51,7 +52,8 @@ class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T
         val startingIndex = element.startingIndex()
         var index = startingIndex
         var current = storage[index]
-        while (current != null) {
+        //Изменили процедуру, чтобы она работала с ячейками DELETED
+        while (current != null && current != DELETED) {
             if (current == element) {
                 return false
             }
@@ -75,8 +77,32 @@ class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T
      *
      * Средняя
      */
+
+    //При удалении ключа из ячейки index мы не можем просто
+    //пометить ее значением NULL. Иначе будут
+    //«потеряны» ячейки, которые исследуются после index.
+
+    //Одно из решений состоит в том, чтобы помечать такие
+    //ячейки специальным значением DELETED вместо NULL.
+
+    private object DELETED
+
+    // T = O(n)
+    // R = O(1)
     override fun remove(element: T): Boolean {
-        TODO("not implemented")
+        val startingIndex = element.startingIndex()
+        var index = startingIndex
+        var current = storage[index]
+        while (current != null) {
+            if (current == element) {
+                storage[index] = DELETED
+                size--
+                return true
+            }
+            index = (index + 1) % capacity
+            current = storage[index]
+        }
+        return false
     }
 
     /**

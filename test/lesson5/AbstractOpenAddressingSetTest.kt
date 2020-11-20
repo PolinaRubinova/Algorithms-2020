@@ -55,7 +55,6 @@ abstract class AbstractOpenAddressingSetTest {
                     "An element wasn't removed contrary to expected."
                 )
                 assertFalse(openAddressingSet.contains(secondInt))
-
                 assertFalse(
                     secondInt in openAddressingSet,
                     "A supposedly removed element is still in the set."
@@ -121,9 +120,14 @@ abstract class AbstractOpenAddressingSetTest {
                 controlSet.isEmpty(),
                 "OpenAddressingSetIterator doesn't traverse the entire set."
             )
-            assertFailsWith<IllegalStateException>("Something was supposedly returned after the elements ended") {
+            assertFalse(
+                controlSet.iterator().hasNext()
+            )
+            assertFailsWith<NoSuchElementException>("Something was supposedly returned after the elements ended") {
                 openAddressingSetIter.next()
             }
+            openAddressingSet.forEach { openAddressingSet.remove(it) }
+            assertEquals(controlSet, openAddressingSet)
             println("All clear!")
         }
     }

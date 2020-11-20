@@ -1,5 +1,7 @@
 package lesson5
 
+import java.util.NoSuchElementException
+
 /**
  * Множество(таблица) с открытой адресацией на 2^bits элементов без возможности роста.
  */
@@ -71,7 +73,7 @@ class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T
     /**
      * Удаление элемента из таблицы
      *
-     * Если элемент есть в таблица, функция удаляет его из дерева и возвращает true.
+     * Если элемент есть в таблице, функция удаляет его из дерева и возвращает true.
      * В ином случае функция оставляет множество нетронутым и возвращает false.
      * Высота дерева не должна увеличиться в результате удаления.
      *
@@ -117,7 +119,44 @@ class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T
      *
      * Средняя (сложная, если поддержан и remove тоже)
      */
-    override fun iterator(): MutableIterator<T> {
-        TODO("not implemented")
+    override fun iterator(): MutableIterator<T> = OpenAddressingSetIterator()
+
+    inner class OpenAddressingSetIterator internal constructor() : MutableIterator<T> {
+
+        private var nextIndex = 0
+        private val lastIndex = storage.indexOfLast { it != null && it != DELETED }
+        private var current: Any? = null
+
+        // Находим индекс следующего элемента в таблице
+        private fun inOrderIterator() {
+            while (hasNext() && (storage[nextIndex] == null ||
+                        storage[nextIndex] == DELETED)
+            ) {
+                nextIndex++
+            }
+        }
+
+        init {
+            inOrderIterator()
+        }
+
+        // T = O(1)
+        // R = O(1)
+        override fun hasNext(): Boolean = nextIndex <= lastIndex
+
+        // T = O(1) - лучший случай, O(n) - худший случай
+        // R = O(1)
+        override fun next(): T {
+            if (!hasNext()) throw NoSuchElementException()
+            current = storage[nextIndex]
+            nextIndex++
+            inOrderIterator()
+            return current as T
+        }
+
+        override fun remove() {
+            TODO("not implemented")
+        }
+
     }
 }

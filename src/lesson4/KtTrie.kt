@@ -1,7 +1,7 @@
 package lesson4
 
-import java.lang.IllegalStateException
 import java.util.*
+
 
 /**
  * Префиксное дерево для строк

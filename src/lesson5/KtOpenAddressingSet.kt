@@ -155,7 +155,9 @@ class KtOpenAddressingSet<T : Any>(private val bits: Int) : AbstractMutableSet<T
         }
 
         override fun remove() {
-            TODO("not implemented")
+            if (current == null) throw IllegalStateException()
+            remove(current)
+            current = null
         }
 
     }

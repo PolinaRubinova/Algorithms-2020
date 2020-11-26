@@ -163,6 +163,9 @@ abstract class AbstractOpenAddressingSetTest {
                 counter--
                 if (element == toRemove) {
                     iterator.remove()
+                    assertFailsWith<IllegalStateException>("OpenAddressingSetIterator.remove() was successfully called twice in a row.") {
+                        iterator.remove()
+                    }
                 }
             }
             assertEquals(

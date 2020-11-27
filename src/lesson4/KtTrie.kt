@@ -1,7 +1,5 @@
 package lesson4
 
-import java.util.*
-
 
 /**
  * Префиксное дерево для строк

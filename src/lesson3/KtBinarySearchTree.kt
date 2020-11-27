@@ -6,9 +6,7 @@ import kotlin.math.max
 // attention: Comparable is supported but Comparator is not
 class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSortedSet<T> {
 
-    private class Node<T>(
-        val value: T
-    ) {
+    private class Node<T>(val value: T) {
         var left: Node<T>? = null
         var right: Node<T>? = null
     }

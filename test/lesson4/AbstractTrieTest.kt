@@ -100,7 +100,7 @@ abstract class AbstractTrieTest {
             while (trieIter.hasNext()) {
                 controlSet.remove(trieIter.next())
             }
-            assertFalse(trieIter.hasNext())
+            assertFalse(trieIter.hasNext(), "hasNext() should be false because set is empty")
             assertTrue(
                 controlSet.isEmpty(),
                 "TrieIterator doesn't traverse the entire set."

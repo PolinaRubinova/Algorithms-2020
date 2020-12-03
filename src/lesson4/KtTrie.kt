@@ -1,5 +1,7 @@
 package lesson4
 
+import java.util.*
+
 
 /**
  * Префиксное дерево для строк
@@ -69,8 +71,63 @@ class KtTrie : AbstractMutableSet<String>(), MutableSet<String> {
      *
      * Сложная
      */
-    override fun iterator(): MutableIterator<String> {
-        TODO()
-    }
+    override fun iterator(): MutableIterator<String> = TrieIterator()
 
+    inner class TrieIterator internal constructor() : MutableIterator<String> {
+
+        private var stack = Stack<String>()
+        private var nextStr = ""
+        private var count = 0 // счетчик количества потомков корня
+        private var listOfRootChild = mutableListOf<String>() // лист потомков корня
+
+        private fun inOrderIterator() {
+            if (count < listOfRootChild.size) {
+                findNext(listOfRootChild[count], findNode(listOfRootChild[count]))
+                count++
+            }
+        }
+
+        // кладем все слова одного из потомков корня в стек
+        private fun findNext(str: String, node: Node?) {
+            for ((key, value) in node!!.children) {
+                if (key == 0.toChar()) {
+                    //если конец слова -> пушим в стек
+                    //и переходим к следующему потомку
+                    stack.push(str)
+                } else {
+                    //доходим до конца слова
+                    findNext(str + key, value)
+                }
+            }
+        }
+
+        init {
+            // добавляем в лист всех потомков корня
+            root.children.keys.forEach { listOfRootChild.add(it.toString()) }
+            // инициализируем итератор для первого потомка корня
+            inOrderIterator()
+        }
+
+        // T = O(1)
+        // R = O(1)
+        override fun hasNext(): Boolean = stack.isNotEmpty()
+
+        // T = O(n)
+        // R = O(1)
+        override fun next(): String {
+            if (stack.isEmpty()) throw NoSuchElementException()
+            nextStr = stack.pop()
+            // если стек пустой- мы ищем следующие слова в следующем потомке корня
+            if (stack.isEmpty()) inOrderIterator()
+            return nextStr
+        }
+
+        // T = O(log n)
+        // R = O(1)
+        override fun remove() {
+            if (nextStr == "") throw IllegalStateException()
+            remove(nextStr)
+            nextStr = ""
+        }
+    }
 }

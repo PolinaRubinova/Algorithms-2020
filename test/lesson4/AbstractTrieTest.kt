@@ -89,7 +89,7 @@ abstract class AbstractTrieTest {
             val iterator1 = trieSet.iterator()
             val iterator2 = trieSet.iterator()
             println("Checking if calling hasNext() changes the state of the iterator...")
-            while (iterator1.hasNext()) {
+            while (iterator1.hasNext() && iterator2.hasNext()) {
                 assertEquals(
                     iterator2.next(), iterator1.next(),
                     "Calling TrieIterator.hasNext() changes the state of the iterator."
@@ -100,6 +100,7 @@ abstract class AbstractTrieTest {
             while (trieIter.hasNext()) {
                 controlSet.remove(trieIter.next())
             }
+            assertFalse(trieIter.hasNext())
             assertTrue(
                 controlSet.isEmpty(),
                 "TrieIterator doesn't traverse the entire set."
@@ -111,7 +112,6 @@ abstract class AbstractTrieTest {
         }
     }
 
-    // тесты достаточны
     protected fun doIteratorRemoveTest() {
         implementationTest { create().iterator().remove() }
         val random = Random()
